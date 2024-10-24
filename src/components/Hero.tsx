@@ -49,7 +49,7 @@ const Hero = () => {
     {
       icon: Code,
       title: "Technical Expertise",
-      description: "Building robust applications and tools that drive business value through code."
+      description: "Building robust applications and tools that drive business value through AI & code."
     },
     {
       icon: TrendingUp,
