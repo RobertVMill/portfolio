@@ -28,7 +28,7 @@ export default function Page() {
   return (
     <section className="py-20">
       <div className="max-w-5xl mx-auto px-4">
-        <h1 className="text-4xl font-bold mb-6">Market Analysis</h1>
+        <h1 className="text-4xl font-bold mb-6 text-gray-900">Market Analysis</h1>
         <p className="text-xl text-gray-600 mb-12">
           In-depth analysis of fintech trends and market dynamics in banking
         </p>
@@ -42,7 +42,7 @@ export default function Page() {
                   <div className="p-3 bg-blue-50 rounded-lg">
                     <Icon className="w-6 h-6 text-blue-600" />
                   </div>
-                  <h3 className="text-xl font-semibold">{insight.title}</h3>
+                  <h3 className="text-xl font-semibold text-gray-900">{insight.title}</h3>
                 </div>
                 <p className="text-gray-600">{insight.description}</p>
               </div>
@@ -52,7 +52,7 @@ export default function Page() {
 
         {/* Call to Action */}
         <div className="mt-16 text-center">
-          <h2 className="text-2xl font-bold mb-4">Want to learn more?</h2>
+          <h2 className="text-2xl font-bold mb-4 text-gray-900">Want to learn more?</h2>
           <p className="text-gray-600 mb-8">
             I regularly publish detailed market analysis and insights.
           </p>
