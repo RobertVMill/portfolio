@@ -1,18 +1,23 @@
-// app/projects/[id]/page.tsx
-import { getProjectById, getAllProjects } from '@/lib/projects';
+// app/projects/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Github, ExternalLink } from 'lucide-react';
+import { getProjectBySlug, getAllProjects } from '@/lib/projects';
+
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const projects = getAllProjects();
+  console.log('Generating static params for projects:', projects.map(p => p.slug));
   return projects.map((project) => ({
-    id: project.id,
+    slug: project.slug,
   }));
 }
 
-export default function ProjectPage({ params }: { params: { id: string } }) {
-  const project = getProjectById(params.id);
+export default function ProjectPage({ params }: { params: { slug: string } }) {
+  console.log('Rendering project page for slug:', params.slug);
+  const project = getProjectBySlug(params.slug);
+  console.log('Found project:', project);
 
   if (!project) {
     notFound();
@@ -21,7 +26,6 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
   return (
     <article className="py-20">
       <div className="max-w-5xl mx-auto px-4">
-        {/* Back Button */}
         <Link 
           href="/projects" 
           className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors mb-8"
@@ -30,12 +34,10 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
           Back to Projects
         </Link>
 
-        {/* Project Header */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-4">{project.title}</h1>
-          <p className="text-xl text-gray-600 mb-6">{project.description}</p>
+          <p className="text-xl text-gray-600 mb-6">{project.longDescription || project.description}</p>
           
-          {/* Links */}
           <div className="flex gap-4">
             {project.links.github && (
               <a 
@@ -62,7 +64,6 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {/* Technologies */}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-4">Technologies Used</h2>
           <div className="flex flex-wrap gap-2">
@@ -77,7 +78,6 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
           </div>
         </section>
 
-        {/* Features */}
         {project.features && (
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Key Features</h2>
@@ -89,7 +89,6 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
           </section>
         )}
 
-        {/* Challenges */}
         {project.challenges && (
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Challenges & Solutions</h2>
@@ -101,7 +100,6 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
           </section>
         )}
 
-        {/* Outcomes */}
         {project.outcomes && (
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Outcomes</h2>
