@@ -38,6 +38,7 @@ const Navbar = () => {
             <NavLink href="/projects">Projects</NavLink>
             <NavLink href="/analysis">Analysis</NavLink>
             <NavLink href="/contact">Contact</NavLink>
+            <NavLink href="/blog">Blog</NavLink> {/* Blog link added */}
           </div>
 
           {/* Mobile Menu Button */}
@@ -57,6 +58,7 @@ const Navbar = () => {
             <NavLink href="/projects">Projects</NavLink>
             <NavLink href="/analysis">Analysis</NavLink>
             <NavLink href="/contact">Contact</NavLink>
+            <NavLink href="/blog">Blog</NavLink> {/* Blog link added */}
           </div>
         )}
       </div>

@@ -88,3 +88,4 @@ export function getProjectBySlug(slug: string) {
 export function getProjectsByCategory(category: Project['category']) {
   return projects.filter(project => project.category === category);
 }
+
