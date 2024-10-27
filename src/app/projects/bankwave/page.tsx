@@ -1,14 +1,13 @@
+// app/projects/bankwave/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Newspaper, TrendingUp, Brain, Globe, Clock, User } from 'lucide-react';
-import { ArrowUp, ArrowDown, ExternalLink } from 'lucide-react';
-// At the top of your BankWave page
+import { Newspaper, TrendingUp, Brain, Globe, Clock, User, ArrowUp, ArrowDown, ExternalLink } from 'lucide-react';
 import type { NewsItem, AIMetrics } from '@/types/news';
 import { formatDistance } from 'date-fns';
-import newsService from '@/lib/newsService';
+import { newsService } from '@/lib/newsService'; // Changed from default import
 
-// Header Component
+// Your components remain the same
 const Header = () => (
   <header className="fixed top-0 left-0 right-0 bg-slate-900/80 backdrop-blur-sm z-50">
     <nav className="max-w-7xl mx-auto px-4 py-4">
@@ -28,7 +27,6 @@ const Header = () => (
   </header>
 );
 
-// Stats Card Component
 interface StatsCardProps {
   title: string;
   value: string | number | JSX.Element;
@@ -47,7 +45,6 @@ const StatsCard = ({ title, value, icon }: StatsCardProps) => (
   </div>
 );
 
-// News Card Component
 interface NewsCardProps {
   item: NewsItem;
   getSentimentColor: (sentiment: number) => string;
@@ -132,7 +129,6 @@ const NewsCard = ({ item, getSentimentColor, formatDate }: NewsCardProps) => (
   </div>
 );
 
-// Loading Skeleton Component
 const LoadingSkeleton = () => (
   <div className="animate-pulse">
     <div className="flex gap-4">
@@ -196,7 +192,6 @@ export default function BankWavePage() {
       <Header />
       <main className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-slate-900">
         <div className="max-w-7xl mx-auto px-4 pt-24">
-          {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <StatsCard
               title="Overall AI Sentiment"
@@ -229,7 +224,6 @@ export default function BankWavePage() {
             />
           </div>
 
-          {/* News Feed */}
           <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
               <Newspaper className="h-6 w-6 text-blue-400" />

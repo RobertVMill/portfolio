@@ -2,21 +2,27 @@
 
 import { NewsItem, NewsAPIResponse, AIMetrics, TickerSentiment } from '@/types/news';
 
-export class NewsService {
-  private readonly NEWS_API_KEY = '60e4642dbc2a46bebb370c92f4c9d742';
+interface APIErrorResponse {
+  error: string;
+}
+
+class NewsService {
   private readonly BANK_TICKERS = ['JPM', 'BAC', 'GS', 'MS', 'C', 'WFC'];
 
   async getAINewsAndSentiment(): Promise<NewsItem[]> {
     try {
-      const response = await fetch(
-        `https://newsapi.org/v2/everything?q=(banking OR fintech) AND (AI OR "artificial intelligence")&sortBy=publishedAt&language=en&apiKey=${this.NEWS_API_KEY}`
-      );
+      const response = await fetch('/api/news');
 
       if (!response.ok) {
-        throw new Error('Failed to fetch news');
+        throw new Error(`Failed to fetch news: ${response.statusText}`);
       }
 
-      const data: NewsAPIResponse = await response.json();
+      const data = await response.json() as NewsAPIResponse | APIErrorResponse;
+      
+      // Type guard to check if response is an error
+      if ('error' in data) {
+        throw new Error(data.error);
+      }
       
       return data.articles.map(article => ({
         title: article.title,
@@ -35,7 +41,7 @@ export class NewsService {
       }));
     } catch (error) {
       console.error('Error fetching news:', error);
-      throw error;
+      throw error instanceof Error ? error : new Error('Failed to fetch news');
     }
   }
 
@@ -83,4 +89,4 @@ export class NewsService {
   }
 }
 
-export default new NewsService();
+export const newsService = new NewsService();
