@@ -2,15 +2,30 @@
 
 import axios from 'axios';
 
+// In lib/aiTracker.ts, update the NewsItem interface
 interface NewsItem {
-  title: string;
-  url: string;
-  time_published: string;
-  summary: string;
-  source: string;
-  overall_sentiment_score: number;
-  overall_sentiment_label: string;
-}
+    title: string;
+    summary: string;
+    time_published: string;
+    url: string;
+    authors?: string[];
+    banner_image?: string;
+    source?: string;
+    category_within_source?: string;
+    source_domain?: string;
+    topics?: Array<{
+      topic: string;
+      relevance_score: string;
+    }>;
+    overall_sentiment_score: number;
+    overall_sentiment_label: string;
+    ticker_sentiment: Array<{
+      ticker: string;
+      relevance_score: string;
+      ticker_sentiment_score: number;
+      ticker_sentiment_label: string;
+    }>;
+  }
 
 interface AIBankingMetrics {
   timestamp: string;

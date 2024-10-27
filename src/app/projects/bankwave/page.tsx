@@ -1,318 +1,264 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Brain, TrendingUp, Cpu, LucideIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Newspaper, TrendingUp, Brain, Globe, Clock, User } from 'lucide-react';
+import { ArrowUp, ArrowDown, ExternalLink } from 'lucide-react';
+// At the top of your BankWave page
+import type { NewsItem, AIMetrics } from '@/types/news';
+import { formatDistance } from 'date-fns';
+import newsService from '@/lib/newsService';
 
-type MetricType = 'innovations' | 'implementations' | 'investments';
-
-interface ChartData {
-  name: string;
-  innovations: number;
-  implementations: number;
-  investments: number;
-}
-
-interface TooltipProps {
-  active: boolean;
-  x: number;
-  y: number;
-  value: number;
-  label: string;
-  metric: MetricType;
-}
-
-const ChartTooltip = ({ active, x, y, value, label, metric }: TooltipProps) => {
-  if (!active) return null;
-
-  return (
-    <g transform={`translate(${x - 50}, ${y - 40})`}>
-      <rect
-        x="0"
-        y="0"
-        width="100"
-        height="35"
-        rx="4"
-        fill="#1f2937"
-        stroke="#374151"
-      />
-      <text x="50" y="15" textAnchor="middle" fill="#9ca3af" fontSize="12">
-        {label}
-      </text>
-      <text x="50" y="30" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold">
-        {metric === 'investments' ? `$${value}M` : value}
-      </text>
-    </g>
-  );
-};
-
-const CustomChart = ({ 
-  data, 
-  metric, 
-  color 
-}: { 
-  data: ChartData[];
-  metric: MetricType;
-  color: string;
-}) => {
-  const [activePoint, setActivePoint] = useState<{
-    active: boolean;
-    x: number;
-    y: number;
-    value: number;
-    label: string;
-  } | null>(null);
-
-  const maxValue = Math.max(...data.map(item => item[metric]));
-  const width = 800;
-  const height = 400;
-  const padding = 40;
-  const chartWidth = width - (2 * padding);
-  const chartHeight = height - (2 * padding);
-
-  const points = data.map((item, index) => ({
-    x: padding + (index * (chartWidth / (data.length - 1))),
-    y: height - padding - ((item[metric] / maxValue) * chartHeight),
-    value: item[metric],
-    label: item.name
-  }));
-
-  const pathD = points.reduce((path, point, i) => {
-    return path + (i === 0 ? `M ${point.x},${point.y}` : ` L ${point.x},${point.y}`);
-  }, '');
-
-  const areaPath = `${pathD} L ${points[points.length - 1].x},${height - padding} L ${padding},${height - padding} Z`;
-
-  return (
-    <svg 
-      viewBox={`0 0 ${width} ${height}`} 
-      className="w-full h-full"
-      onMouseLeave={() => setActivePoint(null)}
-    >
-      <defs>
-        <linearGradient id={`gradient-${metric}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-          <stop offset="100%" stopColor={color} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-
-      {/* Grid lines */}
-      {[...Array(5)].map((_, i) => {
-        const y = padding + (i * (chartHeight / 4));
-        const value = Math.round(maxValue - ((i * maxValue) / 4));
-        return (
-          <g key={i}>
-            <line
-              x1={padding}
-              y1={y}
-              x2={width - padding}
-              y2={y}
-              stroke="#334155"
-              strokeWidth="1"
-              strokeDasharray="3,3"
-            />
-            <text
-              x={padding - 10}
-              y={y}
-              textAnchor="end"
-              alignmentBaseline="middle"
-              fill="#94a3b8"
-              fontSize="12"
-            >
-              {metric === 'investments' ? `$${value}M` : value}
-            </text>
-          </g>
-        );
-      })}
-
-      {/* X axis labels */}
-      {data.map((item, i) => (
-        <text
-          key={i}
-          x={padding + (i * (chartWidth / (data.length - 1)))}
-          y={height - padding + 20}
-          textAnchor="middle"
-          fill="#94a3b8"
-          fontSize="12"
-        >
-          {item.name}
-        </text>
-      ))}
-
-      {/* Area fill */}
-      <path
-        d={areaPath}
-        fill={`url(#gradient-${metric})`}
-      />
-
-      {/* Line */}
-      <path
-        d={pathD}
-        fill="none"
-        stroke={color}
-        strokeWidth="2"
-      />
-
-      {/* Interactive data points */}
-      {points.map((point, i) => (
-        <g key={i}>
-          {/* Larger invisible circle for better hover area */}
-          <circle
-            cx={point.x}
-            cy={point.y}
-            r="12"
-            fill="transparent"
-            onMouseEnter={() => setActivePoint({
-              active: true,
-              x: point.x,
-              y: point.y,
-              value: point.value,
-              label: point.label
-            })}
-            style={{ cursor: 'pointer' }}
-          />
-          {/* Visible point */}
-          <circle
-            cx={point.x}
-            cy={point.y}
-            r="4"
-            fill={color}
-          />
-        </g>
-      ))}
-
-      {/* Tooltip */}
-      {activePoint && (
-        <ChartTooltip
-          active={activePoint.active}
-          x={activePoint.x}
-          y={activePoint.y}
-          value={activePoint.value}
-          label={activePoint.label}
-          metric={metric}
-        />
-      )}
-    </svg>
-  );
-};
-
-// Monthly data stays the same
-const monthlyData: ChartData[] = [
-  { 
-    name: "Jan", 
-    innovations: 24,
-    implementations: 18,
-    investments: 180
-  },
-  { 
-    name: "Feb", 
-    innovations: 30,
-    implementations: 24,
-    investments: 240
-  },
-  { 
-    name: "Mar", 
-    innovations: 28,
-    implementations: 22,
-    investments: 220
-  },
-  { 
-    name: "Apr", 
-    innovations: 50,
-    implementations: 28,
-    investments: 280
-  },
-  { 
-    name: "May", 
-    innovations: 42,
-    implementations: 32,
-    investments: 320
-  },
-  { 
-    name: "Jun", 
-    innovations: 60,
-    implementations: 38,
-    investments: 380
-  },
-];
-
-interface MetricConfig {
-  color: string;
-  icon: LucideIcon;
-  label: string;
-  prefix?: string;
-}
-
-export default function BankWaveDashboard() {
-  const [selectedMetric, setSelectedMetric] = useState<MetricType>("implementations");
-
-  const metrics: Record<MetricType, MetricConfig> = {
-    innovations: { 
-      color: "#10b981", 
-      icon: Brain,
-      label: "New AI Technologies"
-    },
-    implementations: { 
-      color: "#6366f1", 
-      icon: Cpu,
-      label: "Active Deployments"
-    },
-    investments: { 
-      color: "#ef4444", 
-      icon: TrendingUp,
-      label: "AI Investments",
-      prefix: "$"
-    }
-  };
-
-  const calculateMetricValue = (metric: MetricType) => {
-    const total = monthlyData.reduce((acc, month) => acc + month[metric], 0);
-    if (metric === "investments") {
-      return `$${total}M`;
-    }
-    return total.toLocaleString();
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-slate-900">
-      <div className="max-w-7xl mx-auto px-4 pt-24">
-        <h1 className="text-3xl font-bold text-white mb-8">AI Banking Innovations</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {(Object.entries(metrics) as [MetricType, MetricConfig][]).map(([metric, { color, icon: Icon, label }]) => (
-            <div
-              key={metric}
-              onClick={() => setSelectedMetric(metric)}
-              className={`p-6 rounded-xl border cursor-pointer transition-all ${
-                selectedMetric === metric
-                  ? "bg-white/10 border-blue-500"
-                  : "bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/70"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400">{label}</p>
-                  <p className="text-2xl font-bold text-white mt-2">
-                    {calculateMetricValue(metric)}
-                  </p>
-                </div>
-                <Icon className="h-8 w-8" style={{ color }} />
-              </div>
-            </div>
-          ))}
+// Header Component
+const Header = () => (
+  <header className="fixed top-0 left-0 right-0 bg-slate-900/80 backdrop-blur-sm z-50">
+    <nav className="max-w-7xl mx-auto px-4 py-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-blue-400 text-2xl">📈</span>
+          <span className="text-white font-semibold text-xl">BankWave</span>
         </div>
-
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold text-white mb-6 capitalize">
-            {metrics[selectedMetric].label} Growth
-          </h2>
-          <div className="h-[400px] w-full">
-            <CustomChart 
-              data={monthlyData} 
-              metric={selectedMetric} 
-              color={metrics[selectedMetric].color} 
-            />
-          </div>
+        <div className="flex gap-6">
+          <a href="#" className="text-gray-300 hover:text-white">AI Trends</a>
+          <a href="#" className="text-gray-300 hover:text-white">Innovations</a>
+          <a href="#" className="text-gray-300 hover:text-white">Analysis</a>
+          <a href="#" className="text-gray-300 hover:text-white">AI Forecast</a>
         </div>
       </div>
+    </nav>
+  </header>
+);
+
+// Stats Card Component
+interface StatsCardProps {
+  title: string;
+  value: string | number | JSX.Element;
+  icon: JSX.Element;
+}
+
+const StatsCard = ({ title, value, icon }: StatsCardProps) => (
+  <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-6">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-gray-400">{title}</p>
+        <div className="mt-2">{value}</div>
+      </div>
+      {icon}
     </div>
+  </div>
+);
+
+// News Card Component
+interface NewsCardProps {
+  item: NewsItem;
+  getSentimentColor: (sentiment: number) => string;
+  formatDate: (date: string) => string;
+}
+
+const NewsCard = ({ item, getSentimentColor, formatDate }: NewsCardProps) => (
+  <div className="border-b border-gray-700/50 last:border-0 pb-8">
+    <div className="flex gap-6">
+      {item.urlToImage && (
+        <div className="hidden md:block">
+          <img 
+            src={item.urlToImage} 
+            alt={item.title}
+            className="w-48 h-32 object-cover rounded-lg"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+            }}
+          />
+        </div>
+      )}
+      <div className="flex-1">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <a 
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer" 
+              className="text-lg font-medium text-white hover:text-blue-400 transition-colors group flex items-center gap-2"
+            >
+              {item.title}
+              <ExternalLink className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </a>
+            
+            <div className="flex items-center gap-4 mt-2 text-sm text-gray-400">
+              {item.source?.name && (
+                <div className="flex items-center gap-1">
+                  <Globe className="h-4 w-4" />
+                  {item.source.name}
+                </div>
+              )}
+              <div className="flex items-center gap-1">
+                <Clock className="h-4 w-4" />
+                {formatDate(item.time_published)}
+              </div>
+              {item.author && (
+                <div className="flex items-center gap-1">
+                  <User className="h-4 w-4" />
+                  {item.author.split(',')[0]}
+                </div>
+              )}
+            </div>
+            
+            <p className="text-gray-300 mt-3">{item.summary}</p>
+          </div>
+          <div className="flex items-center">
+            {Number(item.overall_sentiment_score) >= 0 ? (
+              <ArrowUp className={`h-6 w-6 ${getSentimentColor(Number(item.overall_sentiment_score))}`} />
+            ) : (
+              <ArrowDown className={`h-6 w-6 ${getSentimentColor(Number(item.overall_sentiment_score))}`} />
+            )}
+          </div>
+        </div>
+        
+        {item.ticker_sentiment && (
+          <div className="flex gap-2 mt-4 flex-wrap">
+            {item.ticker_sentiment.map((ticker, idx) => (
+              <div 
+                key={idx}
+                className={`text-sm px-2 py-1 rounded-full border ${
+                  getSentimentColor(ticker.ticker_sentiment_score)
+                } border-gray-700`}
+              >
+                {ticker.ticker}: {ticker.ticker_sentiment_score.toFixed(2)}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
+// Loading Skeleton Component
+const LoadingSkeleton = () => (
+  <div className="animate-pulse">
+    <div className="flex gap-4">
+      <div className="w-48 h-32 bg-slate-700/50 rounded"></div>
+      <div className="flex-1">
+        <div className="h-6 bg-slate-700/50 rounded w-3/4 mb-2"></div>
+        <div className="h-4 bg-slate-700/50 rounded w-1/4 mb-2"></div>
+        <div className="h-4 bg-slate-700/50 rounded w-full"></div>
+      </div>
+    </div>
+  </div>
+);
+
+export default function BankWavePage() {
+  const [newsData, setNewsData] = useState<NewsItem[]>([]);
+  const [metrics, setMetrics] = useState<AIMetrics>({
+    timestamp: new Date().toISOString(),
+    aiMentions: 0,
+    sentimentScore: 0,
+    topKeywords: []
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [news, newsMetrics] = await Promise.all([
+          newsService.getAINewsAndSentiment(),
+          newsService.getAIActivityMetrics()
+        ]);
+        
+        setNewsData(news);
+        setMetrics(newsMetrics);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const getSentimentColor = (sentiment: number): string => {
+    if (sentiment >= 0.35) return 'text-emerald-500';
+    if (sentiment >= 0.15) return 'text-emerald-400';
+    if (sentiment <= -0.35) return 'text-red-500';
+    if (sentiment <= -0.15) return 'text-red-400';
+    return 'text-gray-400';
+  };
+
+  const formatDate = (dateString: string) => {
+    return formatDistance(new Date(dateString), new Date(), { addSuffix: true });
+  };
+
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-slate-900">
+        <div className="max-w-7xl mx-auto px-4 pt-24">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <StatsCard
+              title="Overall AI Sentiment"
+              value={
+                <p className={`text-2xl font-bold ${getSentimentColor(metrics.sentimentScore)}`}>
+                  {metrics.sentimentScore.toFixed(3)}
+                </p>
+              }
+              icon={<TrendingUp className="h-8 w-8 text-blue-400" />}
+            />
+            
+            <StatsCard
+              title="AI News Coverage"
+              value={<p className="text-2xl font-bold text-white">{newsData.length}</p>}
+              icon={<Newspaper className="h-8 w-8 text-blue-400" />}
+            />
+            
+            <StatsCard
+              title="Top Keywords"
+              value={
+                <div className="flex flex-wrap gap-2">
+                  {metrics.topKeywords.slice(0, 3).map((keyword, index) => (
+                    <span key={index} className="text-sm text-blue-400 bg-blue-400/10 px-2 py-1 rounded-full">
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
+              }
+              icon={<Brain className="h-8 w-8 text-blue-400" />}
+            />
+          </div>
+
+          {/* News Feed */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-6">
+            <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+              <Newspaper className="h-6 w-6 text-blue-400" />
+              AI Banking News & Sentiment Analysis
+            </h2>
+            
+            {loading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <LoadingSkeleton key={i} />
+                ))}
+              </div>
+            ) : error ? (
+              <div className="text-center text-red-400 py-8">{error}</div>
+            ) : (
+              <div className="space-y-8">
+                {newsData.map((item, index) => (
+                  <NewsCard
+                    key={index}
+                    item={item}
+                    getSentimentColor={getSentimentColor}
+                    formatDate={formatDate}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+    </>
   );
 }
