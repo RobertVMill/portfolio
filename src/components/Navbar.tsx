@@ -1,4 +1,3 @@
-// components/Navbar.tsx
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -17,6 +16,7 @@ const Navbar = () => {
         className={`text-gray-900 font-medium transition-colors ${
           isActive ? 'text-blue-600' : 'hover:text-blue-600'
         }`}
+        onClick={() => setIsMenuOpen(false)} // Close menu when link is clicked
       >
         {children}
       </Link>
@@ -38,7 +38,7 @@ const Navbar = () => {
             <NavLink href="/projects">Projects</NavLink>
             <NavLink href="/analysis">Analysis</NavLink>
             <NavLink href="/contact">Contact</NavLink>
-            <NavLink href="/blog">Blog</NavLink> {/* Blog link added */}
+            <NavLink href="/blog">Blog</NavLink>
           </div>
 
           {/* Mobile Menu Button */}
@@ -51,15 +51,34 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 space-y-4">
+        {/* Mobile Navigation with Animation */}
+        <div 
+          className={`md:hidden fixed left-0 right-0 bg-white transition-all duration-300 ease-in-out transform ${
+            isMenuOpen 
+              ? 'opacity-100 translate-y-0' 
+              : 'opacity-0 -translate-y-full pointer-events-none'
+          }`}
+          style={{
+            top: '64px', // height of the navbar
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+          }}
+        >
+          <div className="px-4 py-4 space-y-4 flex flex-col">
             <NavLink href="/">Home</NavLink>
             <NavLink href="/projects">Projects</NavLink>
             <NavLink href="/analysis">Analysis</NavLink>
             <NavLink href="/contact">Contact</NavLink>
-            <NavLink href="/blog">Blog</NavLink> {/* Blog link added */}
+            <NavLink href="/blog">Blog</NavLink>
           </div>
+        </div>
+
+        {/* Overlay for mobile menu */}
+        {isMenuOpen && (
+          <div 
+            className="md:hidden fixed inset-0 bg-black bg-opacity-25 transition-opacity"
+            style={{ top: '64px' }}
+            onClick={() => setIsMenuOpen(false)}
+          />
         )}
       </div>
     </nav>

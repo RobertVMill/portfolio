@@ -1,7 +1,6 @@
-// app/bankwave/layout.tsx
+// app/projects/bankwave/layout.tsx
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import '@/app/globals.css'
 import { Activity } from 'lucide-react'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -17,7 +16,7 @@ export default function BankWaveLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className={inter.className}> {/* Add the inter font className here */}
+    <div className={inter.className}>
       <div className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-slate-900">
         <nav className="border-b border-blue-800/30 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

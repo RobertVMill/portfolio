@@ -1,4 +1,3 @@
-// app/projects/page.tsx
 import React from 'react';
 import Link from 'next/link';
 
@@ -11,10 +10,10 @@ const ProjectsPage = () => {
       slug: 'portfolio-website',
     },
     {
-      title: 'Banking Dashboard',
+      title: 'BankWave',
       description: 'A comprehensive banking dashboard for monitoring financial metrics.',
       technologies: ['React', 'Node.js', 'D3.js', 'AWS'],
-      slug: 'banking-dashboard',
+      slug: 'bankwave', // Updated to match your folder structure
     },
   ];
 
