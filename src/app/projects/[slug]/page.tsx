@@ -3,13 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Github, ExternalLink } from 'lucide-react';
 import { getProjectBySlug, getAllProjects } from '@/lib/projects';
-import dynamic from 'next/dynamic';
-
-// Dynamically import the BankWave dashboard with no SSR since it uses client-side features
-const BankWaveDashboard = dynamic(
-  () => import('../bankwave/page'),
-  { ssr: false }
-);
+import BankWaveDashboard from '../bankwave/page';
 
 export const dynamicParams = false;
 
@@ -83,7 +77,6 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
           </div>
         </div>
 
-        {/* Render BankWave Dashboard if this is the bankwave project */}
         {params.slug === 'bankwave' && (
           <div className="mb-12">
             <BankWaveDashboard />
