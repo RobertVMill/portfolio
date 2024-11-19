@@ -6,6 +6,7 @@ import { Newspaper, TrendingUp, Brain, Globe, Clock, User, ArrowUp, ArrowDown, E
 import type { NewsItem, AIMetrics } from '@/types/news';
 import { formatDistance } from 'date-fns';
 import { newsService } from '@/lib/newsService'; // Changed from default import
+import Image from 'next/image';
 
 // Your components remain the same
 const Header = () => (
@@ -56,15 +57,15 @@ const NewsCard = ({ item, getSentimentColor, formatDate }: NewsCardProps) => (
     <div className="flex gap-6">
       {item.urlToImage && (
         <div className="hidden md:block">
-          <img 
-            src={item.urlToImage} 
-            alt={item.title}
-            className="w-48 h-32 object-cover rounded-lg"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-            }}
-          />
+          <div className="relative w-full h-[300px] rounded-lg overflow-hidden">
+            <Image
+              src={item.urlToImage}
+              alt={item.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
         </div>
       )}
       <div className="flex-1">

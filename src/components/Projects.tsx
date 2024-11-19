@@ -30,7 +30,10 @@ const Projects = () => {
               Featured Projects
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400">
-              Here are some of the projects I've been working on
+              Here are some of the projects I&apos;ve been working on
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Let&apos;s build something amazing together
             </p>
           </div>
 

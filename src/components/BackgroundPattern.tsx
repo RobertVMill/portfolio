@@ -146,7 +146,7 @@ const BackgroundPattern = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, []);
+  }, [generatePoints, generateConnections, animate]);
 
   return (
     <div className="absolute top-0 left-0 w-full h-[40vh] overflow-hidden -z-10">

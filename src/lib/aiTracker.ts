@@ -34,7 +34,7 @@ interface AIBankingMetrics {
   topKeywords: string[];
 }
 
-export class AIBankingTracker {
+class AIBankingTracker {
   private readonly ALPHA_VANTAGE_API_KEY = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY;
   private readonly BASE_URL = 'https://www.alphavantage.co/query';
   
@@ -148,5 +148,6 @@ export class AIBankingTracker {
   }
 }
 
-// Export a default instance
-export default new AIBankingTracker();
+const aiTracker = new AIBankingTracker();
+
+export default aiTracker;
