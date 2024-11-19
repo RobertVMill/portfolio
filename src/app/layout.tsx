@@ -22,7 +22,6 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem={false}
           disableTransitionOnChange
-          suppressHydrationWarning
         >
           <PatternProvider>
             <Navbar />
