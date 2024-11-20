@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col antialiased" suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -25,9 +25,7 @@ export default function RootLayout({
         >
           <PatternProvider>
             <Navbar />
-            <main className="pt-16 flex-grow">
-              {children}
-            </main>
+            {children}
             <Footer />
           </PatternProvider>
         </ThemeProvider>

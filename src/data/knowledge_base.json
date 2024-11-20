@@ -1,0 +1,74 @@
+{
+  "chunks": [
+    {
+      "id": "bio_1",
+      "text": "I am a Full Stack Developer and AI Enthusiast based in the San Francisco Bay Area. My work focuses on combining cutting-edge AI technology with practical web applications.",
+      "metadata": {
+        "category": "biography",
+        "importance": "high"
+      }
+    },
+    {
+      "id": "bio_2",
+      "text": "My expertise spans AI/ML, web development, and product management. I'm passionate about creating innovative solutions that solve real-world problems.",
+      "metadata": {
+        "category": "biography",
+        "importance": "high"
+      }
+    },
+    {
+      "id": "education_1",
+      "text": "I graduated from UC Berkeley with a Bachelor's in Computer Science in 2022. During my time there, I specialized in Machine Learning and Artificial Intelligence.",
+      "metadata": {
+        "category": "education",
+        "importance": "high",
+        "date": "2018-2022"
+      }
+    },
+    {
+      "id": "education_2",
+      "text": "At Berkeley, I worked as a research assistant in the NLP lab, focusing on transformer architectures and language models. I also led the university's main student tech organization.",
+      "metadata": {
+        "category": "education",
+        "importance": "medium",
+        "date": "2018-2022"
+      }
+    },
+    {
+      "id": "experience_1",
+      "text": "Currently working as a Full Stack Developer at a Tech Startup, where I lead the development of AI-powered web applications. My role involves implementing ML models for user behavior prediction.",
+      "metadata": {
+        "category": "experience",
+        "importance": "high",
+        "date": "2022-present"
+      }
+    },
+    {
+      "id": "experience_2",
+      "text": "Notable achievements in my current role include reducing server costs by 40% through optimization and building a scalable microservices architecture that improved system reliability.",
+      "metadata": {
+        "category": "experience",
+        "importance": "medium",
+        "date": "2022-present"
+      }
+    },
+    {
+      "id": "skills_1",
+      "text": "My core technical skills include Python, JavaScript/TypeScript, React, Node.js, and Next.js. I have extensive experience with modern web development frameworks and practices.",
+      "metadata": {
+        "category": "skills",
+        "importance": "high",
+        "type": "technical"
+      }
+    },
+    {
+      "id": "skills_2",
+      "text": "In the AI/ML domain, I'm proficient with TensorFlow, PyTorch, and various NLP frameworks. I have practical experience implementing and deploying machine learning models in production.",
+      "metadata": {
+        "category": "skills",
+        "importance": "high",
+        "type": "ai_ml"
+      }
+    }
+  ]
+}
