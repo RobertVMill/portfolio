@@ -1,7 +1,7 @@
 import HNSWLib from 'hnswlib-node';
 import knowledgeBase from '@/data/knowledge_base.json';
 
-let vectorStore: HNSWLib | null = null;
+let vectorStore: any | null = null;
 const EMBEDDING_DIM = 384; // sentence-transformers dimension
 
 interface Chunk {
